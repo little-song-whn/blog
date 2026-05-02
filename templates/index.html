@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% set page = 'home' %}
+
+{% block content %}
+<div class="wrap-wide">
+
+  <section class="hero">
+    <div class="hero-greeting">— Hello, world ·</div>
+    <h2 class="hero-name">在<em>研究</em>与<em>生活</em>之间,<br>留下一些思考的痕迹。</h2>
+    <p class="hero-blurb">
+      我是 <strong>{{ site.author }}</strong>,在 <em>NJU LAMDA Lab</em> 做研究,
+      方向是强化学习与具身智能。这里是我的小角落 ——
+      一半留给论文与代码,一半留给落日与远方。
+    </p>
+    <div class="hero-meta">
+      <span>南京 · Nanjing</span>
+      <span>·</span>
+      <a href="mailto:{{ site.email }}">写信给我</a>
+      <span>·</span>
+      <a href="{{ root }}about/">了解更多</a>
+    </div>
+  </section>
+
+  <div class="ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>研究 <em>Research</em></h2>
+      <a href="{{ root }}research/" class="more">所有文章 →</a>
+    </div>
+    <ul class="post-list">
+      {% for post in research_posts[:5] %}
+      <li class="post-item">
+        <span class="post-date">{{ post.date_display }}</span>
+        <div>
+          <h3 class="post-title"><a href="{{ root }}{{ post.url }}">{{ post.title }}</a></h3>
+          {% if post.subtitle %}<p class="post-excerpt">{{ post.subtitle }}</p>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="section-block">
+    <div class="section-heading">
+      <h2>生活 <em>Life</em></h2>
+      <a href="{{ root }}life/" class="more">所有文章 →</a>
+    </div>
+    <ul class="post-list">
+      {% for post in life_posts[:5] %}
+      <li class="post-item">
+        <span class="post-date">{{ post.date_display }}</span>
+        <div>
+          <h3 class="post-title"><a href="{{ root }}{{ post.url }}">{{ post.title }}</a></h3>
+          {% if post.subtitle %}<p class="post-excerpt">{{ post.subtitle }}</p>{% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+</div>
+{% endblock %}

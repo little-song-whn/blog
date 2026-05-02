@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set page = post.section %}
+
+{% block title %}{{ post.title }} · {{ site.title }}{% endblock %}
+{% block description %}{{ post.subtitle or post.title }}{% endblock %}
+
+{% block content %}
+<article class="wrap">
+
+  <header class="article-header">
+    <div class="article-meta">
+      <a href="{{ root }}{{ post.section }}/">
+        {% if post.section == 'research' %}研究 · Research{% else %}生活 · Life{% endif %}
+      </a>
+      &nbsp; · &nbsp; {{ post.date_display }}
+      {% if post.reading_time %} &nbsp; · &nbsp; 约 {{ post.reading_time }} 分钟阅读{% endif %}
+    </div>
+    <h1 class="article-title">{{ post.title }}</h1>
+    {% if post.subtitle %}<p class="article-subtitle">{{ post.subtitle }}</p>{% endif %}
+  </header>
+
+  <div class="article-body">
+    {{ post.content_html | safe }}
+  </div>
+
+  <footer class="article-footer">
+    {% if post.tags %}
+    <div class="article-tags">
+      标签:
+      {% for tag in post.tags %}<a href="{{ root }}{{ post.section }}/">{{ tag }}</a>{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="article-nav">
+      {% if prev_post %}
+      <a href="{{ root }}{{ prev_post.url }}" class="prev">
+        <span class="nav-label">← 上一篇</span>
+        <span class="nav-title">{{ prev_post.title }}</span>
+      </a>
+      {% else %}<div></div>{% endif %}
+
+      {% if next_post %}
+      <a href="{{ root }}{{ next_post.url }}" class="next">
+        <span class="nav-label">下一篇 →</span>
+        <span class="nav-title">{{ next_post.title }}</span>
+      </a>
+      {% else %}<div></div>{% endif %}
+    </div>
+  </footer>
+
+</article>
+{% endblock %}

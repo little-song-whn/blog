@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set page = section %}
+
+{% block title %}{{ section_title }} · {{ site.title }}{% endblock %}
+
+{% block content %}
+<div class="wrap-wide">
+
+  <section class="hero" style="padding: 24px 0 48px;">
+    <div class="hero-greeting">— {{ section_title_en }} ·</div>
+    <h2 class="hero-name" style="font-size: clamp(2rem, 5vw, 2.8rem);">{{ section_heading }}</h2>
+    <p class="hero-blurb">{{ section_intro }}</p>
+  </section>
+
+  <ul class="post-list">
+    {% for post in posts %}
+    <li class="post-item">
+      <span class="post-date">{{ post.date_display }}</span>
+      <div>
+        <h3 class="post-title"><a href="{{ root }}{{ post.url }}">{{ post.title }}</a></h3>
+        {% if post.subtitle %}<p class="post-excerpt">{{ post.subtitle }}</p>{% endif %}
+        {% if post.tags %}
+        <div class="post-tags">
+          {% for tag in post.tags %}<span>· {{ tag }}</span>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+</div>
+{% endblock %}

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{{ site.title }}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ site.description }}{% endblock %}">
+<meta name="author" content="{{ site.author }}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ root }}static/css/style.css">
+
+<!-- KaTeX (math) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+
+<!-- highlight.js (code) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css" id="hljs-light">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-dark.min.css" id="hljs-dark" disabled>
+
+<link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ root }}feed.xml">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='90' font-family='serif' fill='%23A8543A'>W</text></svg>">
+
+<script>
+  // Theme: respect saved preference, else auto
+  (function() {
+    const saved = localStorage.getItem('theme');
+    const root = document.documentElement;
+    root.classList.remove('auto');
+    if (saved === 'dark') root.classList.add('dark');
+    else if (saved === 'light') root.classList.add('light');
+    else root.classList.add('auto');
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap-wide site-header-inner">
+    <h1 class="site-title">
+      <a href="{{ root }}">Doro <span class="ampersand">&amp;</span> 笔记</a>
+    </h1>
+    <nav class="site-nav">
+      <a href="{{ root }}" class="{% if page == 'home' %}active{% endif %}">首页</a>
+      <a href="{{ root }}research/" class="{% if page == 'research' %}active{% endif %}"><em>Research</em></a>
+      <a href="{{ root }}life/" class="{% if page == 'life' %}active{% endif %}"><em>Life</em></a>
+      <a href="{{ root }}about/" class="{% if page == 'about' %}active{% endif %}">关于</a>
+      <button class="theme-toggle" id="themeToggle" aria-label="切换主题">◐</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="wrap-wide">
+    <p>© {{ year }} {{ site.author }} · 在写作中思考,在思考中生活。</p>
+    <p>
+      <a href="mailto:{{ site.email }}">{{ site.email }}</a> ·
+      <a href="{{ root }}feed.xml">RSS</a> ·
+      <a href="https://github.com/{{ site.github }}" target="_blank" rel="noopener">GitHub</a>
+    </p>
+  </div>
+</footer>
+
+<!-- KaTeX auto-render -->
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          throwOnError: false
+        });"></script>
+
+<!-- highlight.js -->
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>hljs.highlightAll();</script>
+
+<script>
+  // Theme toggle
+  const toggle = document.getElementById('themeToggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      const root = document.documentElement;
+      const isDark = root.classList.contains('dark') ||
+        (root.classList.contains('auto') && matchMedia('(prefers-color-scheme: dark)').matches);
+      root.classList.remove('auto', 'dark', 'light');
+      if (isDark) {
+        root.classList.add('light');
+        localStorage.setItem('theme', 'light');
+        document.getElementById('hljs-dark').disabled = true;
+        document.getElementById('hljs-light').disabled = false;
+      } else {
+        root.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        document.getElementById('hljs-light').disabled = true;
+        document.getElementById('hljs-dark').disabled = false;
+      }
+    });
+    // Sync hljs theme on load
+    const isDarkNow = document.documentElement.classList.contains('dark') ||
+      (document.documentElement.classList.contains('auto') && matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDarkNow) {
+      document.getElementById('hljs-light').disabled = true;
+      document.getElementById('hljs-dark').disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% set page = 'about' %}
+
+{% block title %}关于 · {{ site.title }}{% endblock %}
+
+{% block content %}
+<article class="wrap-wide">
+
+  <header class="article-header">
+    <div class="article-meta">— About</div>
+    <h1 class="article-title">{{ site.author }}</h1>
+    <p class="article-subtitle">{{ about.subtitle }}</p>
+  </header>
+
+  <div class="article-body">
+    {{ about.intro_html | safe }}
+  </div>
+
+  <section class="about-section">
+    <h2>关注的方向 <em>Interests</em></h2>
+    <div class="article-body" style="font-size: 1rem;">
+      <p>{{ about.interests }}</p>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <h2>联系 <em>Get in touch</em></h2>
+    <div class="article-body" style="font-size: 1rem;">
+      <p>
+        如果你想聊聊研究、合作、或是单纯交个朋友,可以发邮件到
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>。<br>
+        我也在 <a href="https://github.com/{{ site.github }}">GitHub</a> 出没。
+      </p>
+    </div>
+  </section>
+
+</article>
+{% endblock %}
