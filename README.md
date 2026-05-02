@@ -42,8 +42,21 @@ python build.py
 - **数学公式**:行内 `$E = mc^2$`,块级 `$$ ... $$`(KaTeX 渲染)
 - **代码高亮**:三个反引号包裹,带语言标记
 - **脚注**:`[^1]` 引用,底部 `[^1]: 说明`
-- **表格、引用、列表、图片**(Markdown 标准)
+- **表格、引用、列表**(Markdown 标准)
 - **目录**:在文章里写 `[TOC]`
+
+### 插入图片
+
+1. 把图片丢进 `static/images/`(可以按文章名建子目录,比如 `static/images/my-post/cover.jpg`)。
+2. 在 Markdown 里用绝对路径引用,**必须以 `/static/` 开头**:
+
+   ```markdown
+   ![一张春天的玉兰](/static/images/my-post/cover.jpg)
+   ```
+
+3. `build.py` 会自动处理 base_url,本地预览和 GitHub Pages 部署都能正常显示,不用操心。
+
+> 小贴士:图片宽度建议不超过 1600px,文件名用小写英文 + 连字符。
 
 ## 部署到 GitHub Pages
 

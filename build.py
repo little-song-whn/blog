@@ -161,6 +161,15 @@ def build(base_url: str = "/") -> None:
     life_posts = load_section("life")
     all_posts = research_posts + life_posts
 
+    # Rewrite absolute /static/ paths so images work under any base_url
+    # (local serve uses "/", GitHub project pages use "/blog/", etc.)
+    for post in all_posts:
+        post["content_html"] = (
+            post["content_html"]
+            .replace('src="/static/', f'src="{base_url}static/')
+            .replace('href="/static/', f'href="{base_url}static/')
+        )
+
     base_ctx = {
         "site": SITE,
         "root": base_url,
