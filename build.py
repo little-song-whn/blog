@@ -86,6 +86,31 @@ def md_to_html(text: str) -> str:
 # Post loading
 # ---------------------------------------------------------------------------
 FRONTMATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
+MATH_BLOCK_RE = re.compile(r"\$\$(.+?)\$\$", re.DOTALL)
+MATH_INLINE_RE = re.compile(r"\$(.+?)\$")
+
+
+def _protect_math(text: str) -> tuple[str, dict[str, str]]:
+    """Replace $$...$$ and $...$ with placeholders so markdown won't mangle them."""
+    blocks: dict[str, str] = {}
+    counter = 0
+
+    def _replace(m: re.Match) -> str:
+        nonlocal counter
+        key = f"MATHPLACEHOLDER{counter}MATHPLACEHOLDER"
+        blocks[key] = m.group(0)
+        counter += 1
+        return key
+
+    text = MATH_BLOCK_RE.sub(_replace, text)
+    text = MATH_INLINE_RE.sub(_replace, text)
+    return text, blocks
+
+
+def _restore_math(html: str, blocks: dict[str, str]) -> str:
+    for key, value in blocks.items():
+        html = html.replace(key, value)
+    return html
 
 
 def parse_post(path: Path, section: str) -> dict:
@@ -95,7 +120,9 @@ def parse_post(path: Path, section: str) -> dict:
         raise ValueError(f"Missing frontmatter in {path}")
     meta = yaml.safe_load(m.group(1)) or {}
     body = m.group(2)
+    body, math_blocks = _protect_math(body)
     html = md_to_html(body)
+    html = _restore_math(html, math_blocks)
 
     # Reading time: ~300 cn chars / minute, ~250 en words / minute combined
     plain = re.sub(r"<[^>]+>", "", html)
