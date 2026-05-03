@@ -1,7 +1,7 @@
 ---
 title: 当 VLA 模型学会"想象未来"
 subtitle: 关于 World Model 在具身智能中的一点思考
-date: 2026-04-15
+date: 2026-05-02
 tags: [强化学习, World Model, VLA, 笔记]
 slug: world-model-vla
 ---

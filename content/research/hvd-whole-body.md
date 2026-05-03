@@ -1,7 +1,7 @@
 ---
 title: 把 21 个自由度的人形机器人塞进离线 RL
 subtitle: HVD —— 我们为什么要"切开" Q 函数
-date: 2026-05-01
+date: 2026-05-02
 tags: [强化学习, 离线RL, 全身控制, 人形机器人, 笔记]
 slug: hvd-whole-body
 ---

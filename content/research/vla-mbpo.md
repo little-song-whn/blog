@@ -1,7 +1,7 @@
 ---
 title: VLA-MBPO —— 让 World Model 成为微调 VLA 的"陪练"
 subtitle: 像素级世界模型 + 分支 Rollout 的一些工程取舍
-date: 2026-04-30
+date: 2026-05-02
 tags: [VLA, World Model, 强化学习, MBRL, 笔记]
 slug: vla-mbpo
 ---

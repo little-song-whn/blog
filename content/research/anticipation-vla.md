@@ -1,7 +1,7 @@
 ---
 title: 让 VLA 学会"先想一步" —— Anticipation-VLA 笔记
 subtitle: 长程任务里,固定粒度的子任务分解为什么不够
-date: 2026-04-22
+date: 2026-05-02
 tags: [VLA, 长程任务, 具身智能, 笔记]
 slug: anticipation-vla
 ---
