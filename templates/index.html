@@ -4,6 +4,23 @@
 {% block content %}
 <div class="wrap-wide">
 
+  <aside class="time-widget" id="timeWidget" aria-label="此刻 · 实时时钟" title="点击切换 12 / 24 小时制">
+    <svg class="tw-face" viewBox="0 0 100 100" aria-hidden="true">
+      <circle class="tw-face-bg" cx="50" cy="50" r="46"/>
+      <circle class="tw-face-ring" cx="50" cy="50" r="46"/>
+      <g class="tw-ticks"></g>
+      <line class="tw-hand tw-hand-hour" x1="50" y1="50" x2="50" y2="28"/>
+      <line class="tw-hand tw-hand-min"  x1="50" y1="50" x2="50" y2="18"/>
+      <line class="tw-hand tw-hand-sec"  x1="50" y1="50" x2="50" y2="12"/>
+      <circle class="tw-pivot" cx="50" cy="50" r="2.4"/>
+    </svg>
+    <div class="tw-text">
+      <div class="tw-time" id="twTime">--<span class="tw-colon">:</span>--<span class="tw-colon">:</span>--</div>
+      <div class="tw-date" id="twDate">— · — · —</div>
+      <div class="tw-meta" id="twMeta"></div>
+    </div>
+  </aside>
+
   <section class="hero">
     <div class="hero-greeting">— Hello, world ·</div>
     <h2 class="hero-name">在<em>研究</em>与<em>生活</em>之间,<br>留下一些思考的痕迹。</h2>
@@ -60,4 +77,100 @@
   </section>
 
 </div>
+
+<script>
+(function () {
+  const widget = document.getElementById('timeWidget');
+  if (!widget) return;
+  const $time = document.getElementById('twTime');
+  const $date = document.getElementById('twDate');
+  const $meta = document.getElementById('twMeta');
+  const handHour = widget.querySelector('.tw-hand-hour');
+  const handMin  = widget.querySelector('.tw-hand-min');
+  const handSec  = widget.querySelector('.tw-hand-sec');
+  const ticks    = widget.querySelector('.tw-ticks');
+  const SVG_NS   = 'http://www.w3.org/2000/svg';
+
+  for (let i = 0; i < 60; i++) {
+    const a = (i / 60) * Math.PI * 2;
+    const isHour = i % 5 === 0;
+    const r1 = 46, r2 = isHour ? 40 : 43;
+    const line = document.createElementNS(SVG_NS, 'line');
+    line.setAttribute('x1', (50 + Math.sin(a) * r1).toFixed(2));
+    line.setAttribute('y1', (50 - Math.cos(a) * r1).toFixed(2));
+    line.setAttribute('x2', (50 + Math.sin(a) * r2).toFixed(2));
+    line.setAttribute('y2', (50 - Math.cos(a) * r2).toFixed(2));
+    if (isHour) line.setAttribute('class', 'tw-tick-hour');
+    ticks.appendChild(line);
+  }
+
+  const WEEKDAYS = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+  const pad = n => (n < 10 ? '0' : '') + n;
+  let use24 = true;
+  let lastSec = 0, lastMin = 0, lastHour = 0;
+
+  const dayOfYear = d => {
+    const start = new Date(d.getFullYear(), 0, 0);
+    return Math.floor((d - start) / 86400000);
+  };
+  const weekOfYear = d => {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    const day = t.getUTCDay() || 7;
+    t.setUTCDate(t.getUTCDate() + 4 - day);
+    const ys = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil(((t - ys) / 86400000 + 1) / 7);
+  };
+
+  // Cumulative angle: prevents the seconds hand from spinning backwards at 0.
+  function rotate(el, deg, last) {
+    while (deg < last) deg += 360;
+    el.style.transform = 'rotate(' + deg.toFixed(3) + 'deg)';
+    return deg;
+  }
+
+  function tick() {
+    const now = new Date();
+    const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds(), ms = now.getMilliseconds();
+    let head, tail = '';
+    if (use24) {
+      head = pad(h);
+    } else {
+      head = pad(((h + 11) % 12) + 1);
+      tail = '<span class="tw-ampm">' + (h < 12 ? 'AM' : 'PM') + '</span>';
+    }
+    $time.innerHTML = head + '<span class="tw-colon">:</span>' + pad(m) +
+                      '<span class="tw-colon">:</span>' + pad(s) + tail;
+    $date.textContent = now.getFullYear() + ' · ' + pad(now.getMonth() + 1) + ' · ' + pad(now.getDate());
+    $meta.textContent = WEEKDAYS[now.getDay()] + ' · 第 ' + weekOfYear(now) + ' 周 · 第 ' + dayOfYear(now) + ' 天';
+
+    lastSec  = rotate(handSec,  (s + ms / 1000) * 6, lastSec);
+    lastMin  = rotate(handMin,  m * 6 + s * 0.1,     lastMin);
+    lastHour = rotate(handHour, (h % 12) * 30 + m * 0.5, lastHour);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  // Mouse parallax tilt
+  widget.addEventListener('mousemove', (e) => {
+    const r = widget.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    widget.style.setProperty('--tw-rx', (-y * 7).toFixed(2) + 'deg');
+    widget.style.setProperty('--tw-ry', ( x * 7).toFixed(2) + 'deg');
+  });
+  widget.addEventListener('mouseleave', () => {
+    widget.style.setProperty('--tw-rx', '0deg');
+    widget.style.setProperty('--tw-ry', '0deg');
+  });
+
+  // Click: toggle 12 / 24h with a flash
+  widget.addEventListener('click', () => {
+    use24 = !use24;
+    widget.classList.add('tw-flash');
+    setTimeout(() => widget.classList.remove('tw-flash'), 320);
+    tick();
+  });
+})();
+</script>
 {% endblock %}

@@ -1024,4 +1024,147 @@ body::before {
   .post-item:hover { transform: none; }
   .pixel-bob, .pixel-water-1, .pixel-water-2 { animation: none; }
   .pixel-frog.frog--hop { animation: none; }
+  .time-widget { transform: none !important; }
+  .tw-hand { transition: none !important; }
+  .tw-colon { animation: none !important; }
+}
+
+/* ---------- 实时时钟挂件(首页右上) ---------- */
+.time-widget {
+  --tw-rx: 0deg;
+  --tw-ry: 0deg;
+  --tw-lift: 0px;
+  position: absolute;
+  top: 12px;
+  right: 40px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 18px 12px 14px;
+  background: var(--paper-soft);
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px var(--shadow);
+  font-family: var(--serif-en), var(--serif-cn);
+  color: var(--ink);
+  cursor: none;
+  user-select: none;
+  transform: perspective(700px) rotateX(var(--tw-rx)) rotateY(var(--tw-ry)) translateY(var(--tw-lift));
+  transition: transform 0.25s cubic-bezier(.2,.7,.2,1),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease,
+              background-color 0.4s ease;
+}
+.time-widget::before {
+  content: "✦";
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--paper);
+  color: var(--accent);
+  font-size: 0.65rem;
+  padding: 0 6px;
+  letter-spacing: 0.4em;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.time-widget:hover {
+  --tw-lift: -3px;
+  border-color: var(--accent-soft);
+  box-shadow: 0 14px 30px var(--shadow);
+  background: var(--paper);
+}
+.time-widget:hover::before { opacity: 0.85; }
+.time-widget.tw-flash .tw-time { color: var(--accent); }
+
+.tw-face { width: 60px; height: 60px; flex-shrink: 0; }
+.tw-face-bg { fill: var(--paper); }
+.tw-face-ring {
+  fill: none;
+  stroke: var(--rule);
+  stroke-width: 1;
+  transition: stroke 0.4s ease;
+}
+.time-widget:hover .tw-face-ring { stroke: var(--accent-soft); }
+.tw-ticks line { stroke: var(--ink-faint); stroke-width: 0.6; }
+.tw-ticks line.tw-tick-hour { stroke: var(--ink-soft); stroke-width: 1; }
+.tw-hand {
+  stroke: var(--ink);
+  stroke-linecap: round;
+  transform-origin: 50px 50px;
+  transition: transform 0.55s cubic-bezier(.4, 2, .6, 1);
+}
+.tw-hand-hour { stroke-width: 2.6; }
+.tw-hand-min  { stroke-width: 1.8; }
+.tw-hand-sec  { stroke: var(--accent); stroke-width: 0.9; }
+.tw-pivot { fill: var(--accent); }
+
+.tw-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  min-width: 128px;
+}
+.tw-time {
+  font-size: 1.18rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  transition: color 0.3s ease;
+}
+.tw-colon {
+  color: var(--accent);
+  display: inline-block;
+  animation: tw-blink 1s steps(2, start) infinite;
+}
+.tw-ampm {
+  font-size: 0.65em;
+  font-style: italic;
+  color: var(--accent);
+  margin-left: 5px;
+  letter-spacing: 0.06em;
+}
+@keyframes tw-blink { 50% { opacity: 0.25; } }
+
+.tw-date {
+  font-style: italic;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 3px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: oldstyle-nums;
+}
+.tw-meta {
+  font-style: italic;
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.45s ease, opacity 0.45s ease, margin-top 0.45s ease;
+}
+.time-widget:hover .tw-meta {
+  max-height: 24px;
+  opacity: 1;
+  margin-top: 5px;
+}
+
+@media (max-width: 960px) {
+  .time-widget {
+    position: static;
+    margin: 0 0 28px auto;
+    width: max-content;
+    max-width: 100%;
+  }
+  .time-widget::before { display: none; }
+}
+@media (max-width: 480px) {
+  .time-widget { gap: 10px; padding: 10px 14px; }
+  .tw-face { width: 50px; height: 50px; }
+  .tw-text { min-width: 0; }
+  .tw-time { font-size: 1rem; }
 }
